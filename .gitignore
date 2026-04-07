@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+ocr_helper
+captures/
+.ocr_tmp_*
+*.pid
