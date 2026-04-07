@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator - Git Dev Testing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .calculator {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            width: 320px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: #a8b2d1;
+        }
+        .display {
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: right;
+            font-size: 2rem;
+            margin-bottom: 16px;
+            min-height: 64px;
+            word-break: break-all;
+            color: #e94560;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        button {
+            padding: 16px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #0f3460;
+            color: #eee;
+            transition: background 0.15s;
+        }
+        button:hover { background: #533483; }
+        button.operator { background: #e94560; color: #fff; }
+        button.operator:hover { background: #c73e54; }
+        button.equals { background: #533483; color: #fff; grid-column: span 2; }
+        button.equals:hover { background: #6a42a0; }
+        button.clear { background: #a8b2d1; color: #1a1a2e; }
+        button.clear:hover { background: #8892b0; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Git Dev Testing Calculator</h1>
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="clear" onclick="backspace()">⌫</button>
+            <button class="operator" onclick="appendOp('%')">%</button>
+            <button class="operator" onclick="appendOp('/')">÷</button>
+            <button onclick="appendNum('7')">7</button>
+            <button onclick="appendNum('8')">8</button>
+            <button onclick="appendNum('9')">9</button>
+            <button class="operator" onclick="appendOp('*')">×</button>
+            <button onclick="appendNum('4')">4</button>
+            <button onclick="appendNum('5')">5</button>
+            <button onclick="appendNum('6')">6</button>
+            <button class="operator" onclick="appendOp('-')">−</button>
+            <button onclick="appendNum('1')">1</button>
+            <button onclick="appendNum('2')">2</button>
+            <button onclick="appendNum('3')">3</button>
+            <button class="operator" onclick="appendOp('+')">+</button>
+            <button onclick="appendNum('0')">0</button>
+            <button onclick="appendNum('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+    <script>
+        let current = '0';
+        let hasResult = false;
+        const display = document.getElementById('display');
+
+        function updateDisplay() { display.textContent = current; }
+
+        function appendNum(n) {
+            if (hasResult) { current = ''; hasResult = false; }
+            if (current === '0' && n !== '.') current = '';
+            current += n;
+            updateDisplay();
+        }
+
+        function appendOp(op) {
+            hasResult = false;
+            const last = current.slice(-1);
+            if ('+-*/%'.includes(last)) {
+                current = current.slice(0, -1) + op;
+            } else {
+                current += op;
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                const result = Function('"use strict"; return (' + current + ')')();
+                current = Number.isFinite(result) ? String(result) : 'Error';
+            } catch { current = 'Error'; }
+            hasResult = true;
+            updateDisplay();
+        }
+
+        function clearDisplay() { current = '0'; hasResult = false; updateDisplay(); }
+        function backspace() {
+            current = current.slice(0, -1) || '0';
+            hasResult = false;
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
